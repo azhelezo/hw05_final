@@ -1,7 +1,8 @@
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase
 from django.urls import reverse
-from .models import Group, Follow, Post, User
+
+from .models import Follow, Group, Post, User
 
 TEST_TEXT = 'Hasta la vista'
 TEST_EDIT = 'Ill be back'
@@ -128,19 +129,26 @@ class TestPosts(TestCase):
         response = self.user_client.get(reverse('index'))
         self.assertContains(response, 'cache')
 
-    def test_user_can_subscribe_unsubscribe(self):
+    def test_user_can_subscribe(self):
         self.user_client.post(reverse('profile_follow', args=[self.user2]))
         self.assertTrue(Follow.objects.filter(user=self.user, author=self.user2).exists())
+
+    def test_user_can_unsubscribe(self):
+        Follow.objects.create(user=self.user, author=self.user2)
         self.user_client.post(reverse('profile_unfollow', args=[self.user2]))
         self.assertFalse(Follow.objects.filter(user=self.user, author=self.user2).exists())
 
-    def test_post_in_subscriptions(self):
+    def test_post_shows_if_following(self):
         Follow.objects.create(user=self.user, author=self.user2)
+        Post.objects.create(text='sub test', author=self.user2)
+        response = self.user_client.get(reverse('follow_index'))
+        self.assertContains(response, 'sub test')
+
+    def test_post_shows_if_not_following(self):
         Post.objects.create(text='sub test', author=self.user2)
         self.user3_client = Client()
         self.user3_client.force_login(self.user3)
-        response = self.user_client.get(reverse('follow_index'))
-        self.assertContains(response, 'sub test')
+        self.assertFalse(Follow.objects.filter(author=self.user2, user=self.user3).exists())
         response = self.user3_client.get(reverse('follow_index'))
         self.assertNotContains(response, 'sub test')
 
