@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -168,3 +169,6 @@ class TestPosts(TestCase):
         response = self.anon_client.get(reverse('post', args=[self.user.username, self.test_post.id]))
         self.assertContains(response, 'test comment')
         self.assertNotContains(response, 'anon comment')
+    
+    def tearDown(self):
+        cache.clear()  # clear cache between tests
