@@ -1,9 +1,11 @@
+import os
 from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase
 from django.urls import reverse
 
 from .models import Follow, Group, Post, User
+from yatube.settings import BASE_DIR
 
 TEST_TEXT = 'Hasta la vista'
 TEST_EDIT = 'Ill be back'
@@ -11,6 +13,7 @@ TEST_EDIT = 'Ill be back'
 
 class TestPosts(TestCase):
     def setUp(self):
+        cache.clear()  # clear cache before test start
         self.anon_client = Client()
         self.user_client = Client()
         self.user = User.objects.create_user(username='terminator', password='skynetMyLove')
@@ -100,6 +103,8 @@ class TestPosts(TestCase):
             with self.subTest(url=url):
                 response = self.user_client.get(url)
                 self.assertContains(response, '<img')
+        
+        os.remove(os.path.join(BASE_DIR, 'media/posts/some.gif'))
 
     def test_not_img_in_post(self):
         txt = SimpleUploadedFile(
@@ -169,6 +174,3 @@ class TestPosts(TestCase):
         response = self.anon_client.get(reverse('post', args=[self.user.username, self.test_post.id]))
         self.assertContains(response, 'test comment')
         self.assertNotContains(response, 'anon comment')
-    
-    def tearDown(self):
-        cache.clear()  # clear cache between tests
