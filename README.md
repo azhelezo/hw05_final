@@ -14,13 +14,3 @@
       </ul>
     <li>'Favourites' section of main page shows only posts from followed authors.</li>
   </ul></p>
-<h2>Installation:</h2>
-<p>The project uses Python's virtual environment module. Before starting the server run:
-  <ul>
-    <li><code>python -m venv venv</code></li>
-  <ul>
-  <li>On Windows:
-<code>source venv/scripts/activate</code></li>
-  <li>On linux:
-<code>source venv/scripts/activate</code></li></ul>
-<li><code>pip install -r requirements.txt</code></li></ul></p>
