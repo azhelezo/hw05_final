@@ -1,11 +1,12 @@
 import json, os, time
-from .models import Post, User
+from posts.models import Post, User
 from .get_rand_bashorg import get_quote
 from .get_rand_hh import get_vac
 
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-quote = os.path.join(THIS_FOLDER, 'qotd.txt')
-vacancy = os.path.join(THIS_FOLDER, 'votd.txt')
+quote = os.path.join(THIS_FOLDER, 'posts/qotd.txt')
+vacancy = os.path.join(THIS_FOLDER, 'posts/votd.txt')
+
 
 def load_data(source):
     with open(source, 'r+') as f:
@@ -13,6 +14,7 @@ def load_data(source):
         f.seek(0)
         f.truncate()
     return data
+
 
 def parse_bash(q):
     quote_head = f"Цитата №{q['id']} - {q['link']} - {q['date']}"
@@ -24,6 +26,7 @@ def parse_bash(q):
             quote_body += '\n'
 
     return quote_head + '\n' + quote_body
+
 
 def parse_hh(v):
     v_name = f"{v['name']} - {v['link']}"
@@ -39,10 +42,12 @@ def parse_hh(v):
     vac = v_name + '\n' + v_employer + '\n' + v_salary + '\n\n' + v_body
     return vac
 
+
 BOTS = {
     'bash': ['bot-bashorg', get_quote, quote, parse_bash],
     'hh': ['bot-hh', get_vac, vacancy, parse_hh],
 }
+
 
 def make_post(bot):
     BOTS[bot][1]()

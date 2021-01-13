@@ -4,13 +4,20 @@ from bs4 import BeautifulSoup
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 file = os.path.join(THIS_FOLDER, 'votd.txt')
 
+
 def get_vac():
     headers = {'User-Agent': 'api-test-agent'}
 
-    response = requests.get('https://api.hh.ru/vacancies?search_period=7&area=1&text=Django+junior&order_by=publication_time', params=headers)
+    response = requests.get(
+        'https://api.hh.ru/vacancies?search_period=7&area=1&text=Django+junior&order_by=publication_time',
+        params=headers
+        )
     vac_id = response.json()['items'][0]['id']
 
-    response = requests.get(f'https://api.hh.ru/vacancies/{vac_id}', params=headers)
+    response = requests.get(
+        f'https://api.hh.ru/vacancies/{vac_id}',
+        params=headers
+        )
     vac_data = response.json()
 
     vac = {}
@@ -22,8 +29,8 @@ def get_vac():
     vac['employer_url'] = vac_data['employer']['alternate_url']
 
     sal = vac_data['salary']
-    sal_from = '' if sal['from'] == None else sal['from']
-    sal_to = '' if sal['to'] == None else sal['to']
+    sal_from = '' if sal['from'] is None else sal['from']
+    sal_to = '' if sal['to'] is None else sal['to']
     vac['salary'] = f'{sal_from} - {sal_to}'
 
     loc = vac_data['address']

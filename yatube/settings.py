@@ -7,13 +7,13 @@ env = environ.Env()
 environ.Env.read_env()
 
 sentry_sdk.init(
-    dsn=env.SENTRY_DSN,
+    dsn=env('SENTRY_DSN'),
     integrations=[DjangoIntegration()],
 )
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = env.SECRET_KEY
+SECRET_KEY = env('SECRET_KEY')
 
 DEBUG = False
 
@@ -30,6 +30,7 @@ ALLOWED_HOSTS = [
 INSTALLED_APPS = [
     'users',
     'posts',
+    'tasks',
     'django.contrib.sites',
     'django.contrib.flatpages',
     'django.contrib.admin',
