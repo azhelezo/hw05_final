@@ -4,8 +4,8 @@ from .get_rand_bashorg import get_quote
 from .get_rand_hh import get_vac
 
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-quote = os.path.join(THIS_FOLDER, 'posts/qotd.txt')
-vacancy = os.path.join(THIS_FOLDER, 'posts/votd.txt')
+quote = os.path.join(THIS_FOLDER, 'qotd.txt')
+vacancy = os.path.join(THIS_FOLDER, 'votd.txt')
 
 
 def load_data(source):
