@@ -13,6 +13,7 @@
 
 ## Automated posting
 The project is set up with Django-Q task queue. The `tasks` module scrapes [bash.im](http://www.bash.im/) for a random quote and [hh.ru](http://www.hh.ru/) for a random vacancy and creates posts with results. Schedule is set up through Django Admin.
+If you want to use this feature, start an instance of `python manage.py qcluster`.
 
 ## Installation
 Clone the repo to your server, set up a python virtual environment for it and install dependancies from 'requirements.txt'
