@@ -1,14 +1,27 @@
 import os
-from key import KEY
+import environ
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
+env = environ.Env()
+environ.Env.read_env()
+
+sentry_sdk.init(
+    dsn=env.SENTRY_DSN,
+    integrations=[DjangoIntegration()],
+)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = KEY
+SECRET_KEY = env.SECRET_KEY
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
+    '84.201.134.193',
     'localhost',
+    'azhele.tk',
+    'www.azhele.tk',
     '127.0.0.1',
     '[::1]',
     'testserver',
@@ -27,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'sorl.thumbnail',
+    'django_q',
 ]
 
 MIDDLEWARE = [
@@ -66,10 +80,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'yatube.wsgi.application'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default': env.db(),
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -116,4 +127,9 @@ CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     }
+}
+
+Q_CLUSTER = {
+    'name': 'yatube_q',
+    'orm': 'default',
 }
