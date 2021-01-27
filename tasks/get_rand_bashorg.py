@@ -5,7 +5,7 @@ THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 file = os.path.join(THIS_FOLDER, 'qotd.txt')
 
 
-def get_quote():
+def get_quote(*args, **kwargs):
     url = 'http://bash.im/random'
     page = requests.get(url)
     soup = BeautifulSoup(page.text, 'html.parser')

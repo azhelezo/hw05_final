@@ -48,9 +48,12 @@ BOTS = {
     'hh': ['bot-hh', get_vac, vacancy, parse_hh],
 }
 
+for bot in BOTS:
+    User.objects.get_or_create(username=bot[0])
 
-def make_post(bot):
-    BOTS[bot][1]()
+
+def make_post(bot, query=None):
+    BOTS[bot][1](query)
     time.sleep(10)
     data = load_data(BOTS[bot][2])
     text = BOTS[bot][3](data)

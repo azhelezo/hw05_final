@@ -5,11 +5,16 @@ THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 file = os.path.join(THIS_FOLDER, 'votd.txt')
 
 
-def get_vac():
+def get_vac(query=None, *args, **kwargs):
+    if query is None:
+        search = ''
+    else:
+        search = '&text=' + query.replace(' ', '+')
+
     headers = {'User-Agent': 'api-test-agent'}
 
     response = requests.get(
-        'https://api.hh.ru/vacancies?search_period=7&area=1&text=Django+junior&order_by=publication_time',
+        f'https://api.hh.ru/vacancies?search_period=7&area=1{search}&order_by=publication_time',
         params=headers
         )
     vac_id = response.json()['items'][0]['id']
@@ -28,14 +33,13 @@ def get_vac():
     vac['employer_name'] = vac_data['employer']['name']
     vac['employer_url'] = vac_data['employer']['alternate_url']
 
-    sal = vac_data['salary']
-    sal_from = '' if sal['from'] is None else sal['from']
-    sal_to = '' if sal['to'] is None else sal['to']
-    vac['salary'] = f'{sal_from} - {sal_to}'
-
-    loc = vac_data['address']
-    if loc is not None:
-        vac['address'] = f'{loc["raw"]}, метро "{loc["metro"]["station_name"]}".'
+    sal = vac_data.get('salary')
+    if sal is None:
+        vac['salary'] = ''
+    else:
+        sal_from = '' if sal.get('from') is None else sal['from']
+        sal_to = '' if sal.get('to') is None else sal['to']
+        vac['salary'] = f'{sal_from} - {sal_to}'
 
     vac['description'] = []
     soup = BeautifulSoup(vac_data['description'], 'html.parser')
