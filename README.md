@@ -23,7 +23,32 @@ Schedule type - задайте расписание
 # Установка
 Склонируйте репозиторий. Находясь в папке с кодом создайте виртуальное окружение `python -m venv venv`, активируйте его (Windows: `source venv\scripts\activate`; Linux/Mac: `sorce venv/bin/activate`), установите зависимости `python -m pip install -r requirements.txt`.
 
-Для запуска сервера разработки, находясь в директории проекта, выполните команды:
+Приложение настроено на работу с PostgreSQL, создайте в СУБД базу и пользователя для работы приложения:
+```
+postgres-#:
+CREATE DATABASE yatube;
+CREATE USER yatube_user WITH ENCRYPTED PASSWORD 'password'; 
+GRANT ALL PRIVILEGES ON DATABASE yatube TO yatube_user;
+```
+Приложение подготовлено к работе с сервисом мониторинга ошибок [sentry](https://sentry.io/), если не планируете его использовать - закомментируйте следующий фрагмент кода в `yatube/settings.py`:
+```
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
+sentry_sdk.init(
+    dsn=env('SENTRY_DSN'),
+    integrations=[DjangoIntegration()],
+)
+```
+Для запуска сервера разработки:
+
+1 - создайте в директории проекта файл `.env`, в котором дожны быть указаны:
+```
+DATABASE_URL=psql://yatube_user:password@127.0.0.1:5432/yatube # yatube_user, password и yatube - имя пользователя, пароль и название базы в Postgres
+SENTRY_DSN= # ключ из личного кабинета на https://sentry.io/, если решите им воспользоваться
+SECRET_KEY= # secret key django, можно воспользоваться генератором: https://djecrety.ir/
+```
+2 - находясь в директории проекта выполните команды:
 ```
 python manage.py migrate
 python manage.py createsuperuser
