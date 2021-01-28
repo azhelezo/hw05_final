@@ -1,24 +1,38 @@
-# Social network for personal diaries.
+# Социальная сеть дневников.
 
-## Users can
-- Sign up and create their own page.
-- Create and view posts on their page.
-  - Posts can be placed in a group by subject.
-  - A picture can be uploaded as the post's cover.
-- Visit other users' pages:
-  - View their posts
-  - Comment their posts.
-  - Subscribe to their updates.
-- 'Favourites' section of main page shows only posts from followed authors.
+## Пользватели могут:
+- Зарегистрироваться и создать свою страницу.
+- Публиковать и просматривать посты на своей странице.
+  - Посты можно публиковать в группу по теме.
+  - Можно загрузить картинку как обложку поста.
+- Заходить на страницы других пользователей:
+  - Просматривать их посты.
+  - Оставлять комментарии к постам.
+  - Подписываться на обновления.
+- Во вкладке "Избранные авторы" на главной отображаются только посты от авторов, на которых подписан пользователь.
 
-## Automated posting
-The project is set up with Django-Q task queue. The `tasks` module scrapes [bash.im](http://www.bash.im/) for a random quote and [hh.ru](http://www.hh.ru/) for a random vacancy and creates posts with results. Schedule is set up through Django Admin.
-If you want to use this feature, start an instance of `python manage.py qcluster`.
+## Автоматическое создание постов
+В проекте настроена автоматическая публикация постов при помощи очереди заданий Django-Q. Модуль `tasks` берет случайную циатату с [bash.im](http://www.bash.im/) и случайную вакансию с [hh.ru](http://www.hh.ru/) и публикует их. Расписание устанавливается через административную панель Django.
+Если Вы хотите воспользоваться этим функционалом, запустите процесс `python manage.py qcluster`, затем в административной панели django зайдите в Scheduled tasks секции Django-Q и создайте задание:
+```
+Name: название задания
+Func: tasks.posts.make_post
+Args: 'hh' или 'bash'
+Schedule type - задайте расписание
+```
+# Установка
+Склонируйте репозиторий. Находясь в папке с кодом создайте виртуальное окружение `python -m venv venv`, активируйте его (Windows: `source venv\scripts\activate`; Linux/Mac: `sorce venv/bin/activate`), установите зависимости `python -m pip install -r requirements.txt`.
 
-## Installation
-Clone the repo to your server, set up a python virtual environment for it and install dependancies from 'requirements.txt'
+Для запуска сервера разработки, находясь в директории проекта, выполните команды:
+```
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+```
 
-## Built with
+Проект запущен и доступен по адресу [localhost:8000](http://localhost:8000/).
+
+## Технологии
 
 - [Python](https://www.python.org/)
 - [Django](https://www.djangoproject.com/)
@@ -30,7 +44,7 @@ Clone the repo to your server, set up a python virtual environment for it and in
 - [Gunicorn](https://gunicorn.org/)
 - [Nginx](https://nginx.org/)
 
-## Set up to work with
+## Подготовлен к работе с
 - [Django-Q](https://pypi.org/project/django-q/)
 - [UptimeRobot](https://uptimerobot.com)
 - [Sentry](https://sentry.io/)
